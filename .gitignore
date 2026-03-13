@@ -1,0 +1,72 @@
+# 系统文件夹
+.claude/
+.trae/
+
+# 项目文件夹（不需要跟踪）
+00-建研院业绩/
+00-日常/
+00-资料/
+00-总结/
+22-清苑项目/
+22-三期-清苑南街/
+23-诺维信/
+24-南沙老旧小区改造/
+25 邢台城市更新/
+25-背街小巷/
+25-档案馆/
+25-营口/
+25-重大项目（北京）/
+25-总医院病房改造/
+26-发改委谋划天津项目/
+
+# 临时文件
+*.tmp
+*.temp
+*.log
+*.bak
+*~
+
+# IDE文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 大型文件
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+*.iso
+
+# Office文件临时版本
+~$*
+*~$*
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python文件
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Node.js文件
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 构建文件
+dist/
+build/
+*.min.js
+*.min.css
