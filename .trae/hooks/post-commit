@@ -1,0 +1,76 @@
+# Git post-commit hook - 生成文件夹结构快照
+# 功能: 在 Git 提交后生成文件夹结构快照
+# 触发: 每次 `git commit` 成功后
+# 生成: 文件夹结构快照报告
+
+# 获取当前时间
+$timestamp = Get-Date -Format 'yyyyMMdd_HHmmss'
+$reportPath = "输出成果\文件夹结构快照_$timestamp.md"
+$skillsPath = ".trae\skills"
+
+# 获取当前 Git 提交信息
+$commitHash = git rev-parse HEAD
+$commitMessage = git log -1 --pretty=format:"%s"
+
+# 生成报告
+$report = @"
+# 文件夹结构快照
+
+生成时间: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
+Git 提交: $commitHash
+提交信息: $commitMessage
+
+---
+
+## 文件夹列表
+
+"@
+
+# 获取所有文件夹
+$folders = Get-ChildItem -Path $skillsPath -Directory | Sort-Object Name
+
+# 添加文件夹列表
+foreach ($folder in $folders) {
+    $report += "`n### $($folder.Name)`n"
+    $report += "- 路径: `$($folder.FullName.Replace($PWD.Path + '\', ''))``n"
+
+    # 获取文件夹中的文件
+    $files = Get-ChildItem -Path $folder.FullName -File
+    if ($files.Count -gt 0) {
+        $report += "- 包含: "
+        $fileList = $files.Name -join ", "
+        $report += "$fileList`n"
+    }
+}
+
+$report += @"
+
+---
+
+## 统计信息
+
+- 文件夹总数: $($folders.Count)
+- 最后更新: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
+
+---
+
+## 相关文档
+
+- 文件夹管理 Skill: `.trae\skills\文件夹管理\SKILL.md`
+- 文件夹结构检查报告: `输出成果\文件夹结构检查报告_v2.md`
+
+---
+
+*版本: 1.0*
+*生成时间: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')*
+"@
+
+# 保存报告
+$report | Out-File -FilePath $reportPath -Encoding UTF8
+
+# 输出成功消息
+Write-Host "✅ 文件夹结构快照已生成" -ForegroundColor Green
+Write-Host "📄 报告路径: $reportPath" -ForegroundColor Cyan
+Write-Host "📊 文件夹总数: $($folders.Count)" -ForegroundColor Yellow
+
+exit 0

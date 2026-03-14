@@ -1,0 +1,45 @@
+# Git pre-commit hook - 文件夹结构检查
+# 功能: 在 Git 提交前自动检查文件夹结构
+# 触发: 每次 `git commit` 时
+# 检查: 文件夹命名规范、文件夹结构一致性、非法字符检查
+
+$illegalChars = @('/', '\', ':', '*', '?', '"', '<', '>', '|')
+$stagedFiles = git diff --cached --name-only --diff-filter=ACM
+
+# 检查暂存的文件
+foreach ($file in $stagedFiles) {
+    # 获取文件夹路径
+    $folder = Split-Path -Parent $file
+
+    # 如果文件在 .trae\skills\ 目录下，检查文件夹命名
+    if ($folder -like "*\.trae\skills\*") {
+        # 获取文件夹名称
+        $folderName = Split-Path -Leaf $folder
+
+        # 检查非法字符
+        foreach ($char in $illegalChars) {
+            if ($folderName -like "*$char*") {
+                Write-Host "❌ 错误: 文件夹 '$folderName' 包含非法字符 '$char'" -ForegroundColor Red
+                Write-Host "💡 建议: 使用 '-' 或 '_' 代替 '$char'" -ForegroundColor Yellow
+                Write-Host "📝 示例: 将 'A/B测试' 改为 'AB测试'" -ForegroundColor Cyan
+                Write-Host ""
+                Write-Host "🔧 修复步骤:" -ForegroundColor Green
+                Write-Host "1. 重命名文件夹: mv '$folder' '$($folderName -replace [regex]::Escape($char), '-')'" -ForegroundColor Gray
+                Write-Host "2. 重新添加文件: git add ." -ForegroundColor Gray
+                Write-Host "3. 重新提交: git commit -m 'your message'" -ForegroundColor Gray
+                Write-Host ""
+                exit 1
+            }
+        }
+
+        # 检查文件夹名称长度
+        if ($folderName.Length -gt 20) {
+            Write-Host "⚠️  警告: 文件夹 '$folderName' 名称过长（$($folderName.Length) 个字符）" -ForegroundColor Yellow
+            Write-Host "💡 建议: 文件夹名称不宜超过 20 个字符" -ForegroundColor Yellow
+            Write-Host ""
+        }
+    }
+}
+
+Write-Host "✅ 文件夹结构检查通过" -ForegroundColor Green
+exit 0
