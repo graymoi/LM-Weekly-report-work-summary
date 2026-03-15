@@ -1,0 +1,70 @@
+# Hook运行时配置
+# 用于控制Hooks的行为模式
+
+# Hook配置版本
+version: "1.0"
+
+# 运行模式：minimal | standard | strict
+# minimal: 最小化模式，只执行核心功能
+# standard: 标准模式，执行所有常规功能
+# strict: 严格模式，执行所有验证和检查
+profile: standard
+
+# 禁用的Hooks列表
+disabled_hooks: []
+
+# 会话开始Hook配置
+session_start:
+  enabled: true
+  load_personal_profile: true
+  load_project_status: true
+  load_recent_context: true
+  context_days: 7
+
+# 会话结束Hook配置
+session_end:
+  enabled: true
+  save_session_summary: true
+  update_knowledge_base: true
+  extract_patterns: true
+
+# 提交前Hook配置
+pre_commit:
+  enabled: true
+  validate_file_naming: true
+  check_sensitive_data: true
+
+# 提交后Hook配置
+post_commit:
+  enabled: true
+  auto_push: false
+  update_changelog: false
+
+# 验证循环配置
+verification:
+  enabled: true
+  checkpoint_enabled: true
+  continuous_eval: false
+  pass_at_k: 3
+
+# 使用统计配置
+statistics:
+  enabled: true
+  track_skill_usage: true
+  track_hook_triggers: true
+  track_session_duration: true
+  output_path: "输出成果/使用统计"
+
+# 自我进化配置
+evolution:
+  enabled: true
+  auto_extract_skills: true
+  auto_update_rules: false
+  auto_update_hooks: false
+  require_user_confirmation: true
+
+# 日志配置
+logging:
+  enabled: true
+  level: info
+  output_path: "输出成果/日志"
